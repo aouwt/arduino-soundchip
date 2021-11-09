@@ -27,7 +27,7 @@ class Song {
       uint16_t arg;
     } song_t;
 
-    song_t* curSong;
+    const song_t* curSong;
 
 	void begin (Sound::channelid_t chs, Sound::pin_t pin);
     void manualBegin (Sound* sound);

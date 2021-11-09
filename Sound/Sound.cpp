@@ -4,7 +4,7 @@ void Sound::begin (Sound::channelid_t chs, Sound::pin_t outputPin) {
   pinMode (outputPin, OUTPUT);
   numOfChs = chs;
   pin = outputPin;
-  ch = malloc (sizeof(Sound::channel_t) * chs);
+  ch = (Sound::channel_t*) malloc (sizeof(Sound::channel_t) * chs);
 }
 
 void Sound::end (void) {

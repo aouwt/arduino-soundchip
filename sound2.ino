@@ -1,8 +1,8 @@
 #include <Sound.h>
 #include <Song.h>
 
-Sound soundObj;
-Song songObj;
+Sound sound;
+Song song;
 
 const Song::song_t playMe[] = {
   { 0, freqToInterval(440) },
@@ -11,14 +11,14 @@ const Song::song_t playMe[] = {
 
 void setup() {
   // put your setup code here, to run once:
-  soundObj.init (10, 13);
-  soundObj.Ch[0].interval = freqToInterval(440);
-  //songObj.init (&soundObj);
-  //songObj.playSong (playMe);
+  sound.init (10, 13);
+  sound.Ch[0].interval = freqToInterval(440);
+  song.init (&sound);
+  song.playSong (playMe);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  soundObj.soundTick();
-  //songObj.songTick();
+  sound.soundTick();
+  song.songTick();
 }

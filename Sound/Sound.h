@@ -1,7 +1,15 @@
-#pragma once
+/*
+  Sound.h - Library for generating multi-channel sound.
+  Created by aouwt, November 9, 2021.
+  License TBD.
+*/
+
+#ifndef Sound_h
+#define Sound_h
+
 #include "Arduino.h"
 
-#define freqToInterval(freq) (1000000.0 / (freq))
+#define freqToInterval(freq) ((Sound::fint_t)(1000000.0 / (freq)))
 
 class Sound {
   public:
@@ -17,16 +25,17 @@ class Sound {
       bool cycle = false;
     } channel_t;
     
-    channel_t* Ch;
-    channelid_t NumOfChs;
-    pin_t Pin;
+    channel_t* ch;
+    channelid_t numOfChs;
+    pin_t pin;
     
-    void init (channelid_t NumOfChs, pin_t pin);
-    void drop (void);
+    void begin (channelid_t chs, pin_t outputPin);
+    void end (void);
     void soundTick (void);
-    inline void setFreq (channelid_t ch, freq_t freq);
+    void setFreq (channelid_t channel, freq_t freq);
     
   private:
-    time_t now;
-    channelid_t curCh;
+    time_t _now;
+    channelid_t _curCh;
 };
+#endif

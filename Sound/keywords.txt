@@ -6,15 +6,15 @@ channelid_t	KEYWORD3
 pin_t	KEYWORD3
 
 
-init	KEYWORD2
-drop	KEYWORD2
+begin	KEYWORD2
+end	KEYWORD2
 soundTick	KEYWORD2
 freqToInterval	KEYWORD2
 setFreq	KEYWORD2
 
-Ch	KEYWORD2
-NumOfChs	KEYWORD2
-Pin	KEYWORD2
+ch	KEYWORD2
+numOfChs	KEYWORD2
+pin	KEYWORD2
 
 
 Sound	KEYWORD1

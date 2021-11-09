@@ -1,4 +1,11 @@
-#pragma once
+/*
+  Song.h - Library for controlling sound channels from Sound.h in an easy-to-use API.
+  Created by aouwt, November 9, 2021.
+  License TBD.
+*/
+#ifndef Song_h
+#define Song_h
+
 #include "Sound.h"
 #include "Arduino.h"
 #include "Complex.h"
@@ -8,8 +15,8 @@
 #define SONG_END -3
 #define SONG_LOOP -4
 
-#define stToFreq(note) (powf(2, (float)((note) - 49.0) / 12.0) * 440.0)
-#define stToInterval(note) (freqToInterval(stToFreq((note))))
+#define stToFreq(note) ((uint16_t)(powf(2, (float)((note) - 49.0) / 12.0) * 440.0))
+#define stToInterval(note) ((Sound::fint_t)(freqToInterval(stToFreq((note)))))
 
 class Song {
   public:
@@ -22,14 +29,19 @@ class Song {
 
     song_t* curSong;
 
-    void init (Sound* sound);
-    void playSong (song_t* song);
+	void begin (Sound::channelid_t chs, Sound::pin_t pin);
+    void manualBegin (Sound* sound);
+    void playSong (const song_t* song);
     void songTick (void);
+	void tick (void);
+	void end (void);
+	
 
   private:
-    time_t now, nextTime;
-    unsigned char curPos = -1;
-    unsigned int curDelay = 0;
-    bool ended = false;
-    Sound* soundObj;
+    time_t _now, _nextTime;
+    unsigned char _curPos = -1;
+    unsigned int _curDelay = 0;
+    bool _ended = false;
+    Sound* _Sound;
 };
+#endif

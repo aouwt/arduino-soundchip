@@ -1,46 +1,62 @@
 #include "Song.h"
+
 void Song::songTick (void) {  
-  if (this->ended) return;
+  if (_ended) return;
   
-  this->now = millis();
-  if (this->now >= this->nextTime) {;
-    this->curPos++;
+  _now = millis();
+  if (_now >= _nextTime) {;
+    _curPos++;
     
-    if (this->curSong[this->curPos].cmd >= 0) {
-      this->soundObj->Ch[this->curSong[this->curPos].cmd].interval = this->curSong[this->curPos].arg;
+    if (curSong[_curPos].cmd >= 0) {
+      _Sound -> ch[curSong[_curPos].cmd].interval = curSong[_curPos].arg;
     }
     
     else {
-      switch (this->curSong[this->curPos].cmd) {
+      switch (curSong[_curPos].cmd) {
 
 	case SONG_WAIT:
-	  this->nextTime = this->now + this->curSong[this->curPos].arg;
+	  _nextTime = _now + curSong[_curPos].arg;
 	  break;
 
 	  
 	case SONG_SETDELAY:
-	  this->curDelay = this->curSong[this->curPos].arg;
+	  _curDelay = curSong[_curPos].arg;
 	  break;
 	  
 	case SONG_LOOP:
-	  this->curPos = 0;
+	  _curPos = 0;
 	  break;
 
 	case SONG_END:
-	  this->ended = true;
+	  _ended = true;
 	  break;
 
       }
       return;
     }
-    this->nextTime = this->now + this->curDelay;
+    _nextTime = _now + _curDelay;
   }
 }
 
-void Song::init (Sound* sound) {
-  this->soundObj = sound;
+void Song::manualBegin (Sound* sound) {
+  _Sound = sound;
 }
 
-void Song::playSong (song_t* song) {
-  this->curSong = song;
+void Song::begin (Sound::channelid_t chs, Sound::pin_t pin) {
+  _Sound = (Sound*) malloc (sizeof(Sound));
+  _Sound -> begin (chs, pin);
+}
+
+void Song::end (void) {
+  _Sound -> end ();
+  free (_Sound);
+}
+
+void Song::playSong (const song_t* song) {
+  curSong = song;
+}
+
+void Song::tick (void) {
+  this -> songTick ();
+  _Sound -> soundTick ();
 }

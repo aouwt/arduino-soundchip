@@ -1,46 +1,46 @@
 #include "Song.h"
 void Song::songTick (void) {  
-  if (ended) return;
+  if (this->ended) return;
   
-  now = millis();
-  if (now >= nextTime) {;
-    curPos++;
+  this->now = millis();
+  if (this->now >= this->nextTime) {;
+    this->curPos++;
     
-    if (curSong[curPos].cmd >= 0) {
-      soundObj->Ch[curSong[curPos].cmd].interval = curSong[curPos].arg;
+    if (this->curSong[this->curPos].cmd >= 0) {
+      this->soundObj->Ch[this->curSong[this->curPos].cmd].interval = this->curSong[this->curPos].arg;
     }
     
     else {
-      switch (curSong[curPos].cmd) {
+      switch (this->curSong[this->curPos].cmd) {
 
 	case SONG_WAIT:
-	  nextTime = now + curSong[curPos].arg;
+	  this->nextTime = this->now + this->curSong[this->curPos].arg;
 	  break;
 
 	  
 	case SONG_SETDELAY:
-	  curDelay = curSong[curPos].arg;
+	  this->curDelay = this->curSong[this->curPos].arg;
 	  break;
 	  
 	case SONG_LOOP:
-	  curPos = 0;
+	  this->curPos = 0;
 	  break;
 
 	case SONG_END:
-	  ended = true;
+	  this->ended = true;
 	  break;
 
       }
       return;
     }
-    nextTime = now + curDelay;
+    this->nextTime = this->now + this->curDelay;
   }
 }
 
 void Song::init (Sound* sound) {
-  soundObj = sound;
+  this->soundObj = sound;
 }
 
 void Song::playSong (song_t* song) {
-  curSong = song;
+  this->curSong = song;
 }

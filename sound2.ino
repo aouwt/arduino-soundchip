@@ -1,7 +1,5 @@
-#include <Sound.h>
 #include <Song.h>
 
-Sound sound;
 Song song;
 
 const Song::song_t playMe[] = {
@@ -11,14 +9,11 @@ const Song::song_t playMe[] = {
 
 void setup() {
   // put your setup code here, to run once:
-  sound.init (10, 13);
-  //sound.Ch[0].interval = freqToInterval(440);
-  song.init (&sound);
+  song.begin (10, LED_BUILTIN);
   song.playSong (playMe);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  sound.soundTick();
-  song.songTick();
+  song.tick();
 }

@@ -2,33 +2,33 @@
 
 void Sound::init (Sound::channelid_t chs, Sound::pin_t pin) {
   pinMode (pin, OUTPUT);
-  NumOfChs = chs;
-  Pin = pin;
-  Ch = (Sound::channel_t*) malloc (sizeof(Sound::channel_t) * chs);
+  this->NumOfChs = chs;
+  this->Pin = pin;
+  this->Ch = (Sound::channel_t*) malloc (sizeof(Sound::channel_t) * chs);
   return;
 }
 
 void Sound::drop (void) {
-  free (Ch);
+  free (this->Ch);
   return;
 }
 
 void Sound::setFreq (Sound::channelid_t ch, Sound::freq_t freq) {
-  Ch[ch].interval = freqToInterval (freq);
+  this->Ch[ch].interval = freqToInterval (freq);
   return;
 }
 
 void Sound::soundTick (void) {
-  if (++curCh == NumOfChs) {
-    curCh = 0; now = micros();
+  if (++this->curCh == this->NumOfChs) {
+    this->curCh = 0; this->now = micros();
   }
-  if (Ch[curCh].interval) {
+  if (this->Ch[this->curCh].interval) {
     
-    digitalWrite (Pin, Ch[curCh].cycle);
-    if (Ch[curCh].next <= now) {
-      Ch[curCh].cycle = !Ch[curCh].cycle;
-      Ch[curCh].next = now + Ch[curCh].interval;
+    digitalWrite (this->Pin, this->Ch[this->curCh].cycle);
+    if (this->Ch[this->curCh].next <= this->now) {
+      this->Ch[this->curCh].cycle = !this->Ch[this->curCh].cycle;
+      this->Ch[this->curCh].next = this->now + this->Ch[this->curCh].interval;
     }
     
-  } else digitalWrite (Pin, LOW);
+  } else digitalWrite (this->Pin, LOW);
 }

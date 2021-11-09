@@ -1,0 +1,14 @@
+song_t	KEYWORD3
+time_t	KEYWORD3
+
+
+init	KEYWORD2
+playSong	KEYWORD2
+songTick	KEYWORD2
+stToFreq	KEYWORD2
+stToInterval	KEYWORD2
+
+curSong	KEYWORD2
+
+
+Song	KEYWORD1

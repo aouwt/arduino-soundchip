@@ -35,6 +35,7 @@ class Song {
     const song_t* curSong;
     bool isEnded = false;
     
+    void restart (void);
     void begin (Sound::channelid_t chs, Sound::pin_t pin);
     void manualBegin (Sound* sound);
     void playSong (const song_t* song);

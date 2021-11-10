@@ -58,6 +58,11 @@ void Song::playSong (const Song::song_t* song) {
   curSong = song;
 }
 
+void Song::restart (void) {
+  isEnded = false;
+  curPos = 0;
+}
+
 void __attribute__((always_inline)) Song::tick (void) {
   songTick ();
   (_Sound ->* _tickType) ();

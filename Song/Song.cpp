@@ -1,7 +1,7 @@
 #include "Song.h"
 
 void Song::songTick (void) {  
-  if (_ended) return;
+  if (isEnded) return;
   
   _now = millis ();
   if (_now >= _nextTime) {;
@@ -28,7 +28,7 @@ void Song::songTick (void) {
 	  break;
 
 	case SONG_END:
-	  _ended = true;
+	  isEnded = true;
 	  break;
 
       }
@@ -54,6 +54,7 @@ void Song::end (void) {
 }
 
 void Song::playSong (const Song::song_t* song) {
+  isEnded = false;
   curSong = song;
 }
 

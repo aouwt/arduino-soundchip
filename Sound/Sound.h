@@ -9,7 +9,7 @@
 
 #include "Arduino.h"
 
-#define freqToInterval(freq) ((Sound::fint_t)(1000000.0 / (freq)))
+#define freqToInterval(freq) (1000000.0 / (freq))
 
 class Sound {
   public:
@@ -20,8 +20,8 @@ class Sound {
     typedef unsigned char pin_t;
 
     typedef struct channel_t {
-      fint_t interval = 0;
-      time_t next = 0;
+      fint_t interval;
+      time_t next;
       bool cycle = false;
     } channel_t;
     
@@ -31,8 +31,13 @@ class Sound {
     
     void begin (channelid_t chs, pin_t outputPin);
     void end (void);
-    void soundTick (void);
-    void setFreq (channelid_t channel, freq_t freq);
+    void setPin (pin_t outputPin);
+    void init (channelid_t chs);
+    void tick (void);
+    void fullTick (void);
+    void tickEQ (void);
+    void fullTickEQ (void);
+    void __attribute__((always_inline)) setFreq (channelid_t channel, freq_t freq);
     
   private:
     time_t _now;

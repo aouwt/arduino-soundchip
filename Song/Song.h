@@ -15,12 +15,17 @@
 #define SONG_END -3
 #define SONG_LOOP -4
 
-#define stToFreq(note) ((uint16_t)(powf(2, (float)((note) - 49.0) / 12.0) * 440.0))
-#define stToInterval(note) ((Sound::fint_t)(freqToInterval(stToFreq((note)))))
+#define TICK_NORMAL 0
+#define TICK_FULL 1
+#define TICK_NORMALEQ 2
+#define TICK_FULLEQ 3
+
+#define stToFreq(note) (powf(2, (float)((note) - 49.0) / 12.0) * 440.0)
+#define stToInterval(note) (freqToInterval(stToFreq((note))))
 
 class Song {
   public:
-    typedef unsigned long time_t;
+    typedef unsigned int time_t;
 
     typedef struct song_t {
       int8_t cmd;
@@ -28,13 +33,14 @@ class Song {
     } song_t;
 
     const song_t* curSong;
-
-	void begin (Sound::channelid_t chs, Sound::pin_t pin);
+    
+    void begin (Sound::channelid_t chs, Sound::pin_t pin);
     void manualBegin (Sound* sound);
     void playSong (const song_t* song);
     void songTick (void);
-	void tick (void);
-	void end (void);
+    void __attribute__((always_inline)) tick (void);
+    void setTickType (char tickType);
+    void end (void);
 	
 
   private:
@@ -43,5 +49,7 @@ class Song {
     unsigned int _curDelay = 0;
     bool _ended = false;
     Sound* _Sound;
+    void (Sound::*_tickType) (void); //dont really understand this but /shrug
+
 };
 #endif

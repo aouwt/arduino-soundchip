@@ -8,9 +8,14 @@ pin_t	KEYWORD3
 
 begin	KEYWORD2
 end	KEYWORD2
-soundTick	KEYWORD2
 freqToInterval	KEYWORD2
 setFreq	KEYWORD2
+init	KEYWORD2
+setPin	KEYWORD2
+tick	KEYWORD2
+fullTick	KEYWORD2
+tickEQ	KEYWORD2
+fullTickEQ	KEYWORD2
 
 ch	KEYWORD2
 numOfChs	KEYWORD2

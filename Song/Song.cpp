@@ -3,7 +3,7 @@
 void Song::songTick (void) {  
   if (_ended) return;
   
-  _now = millis();
+  _now = millis ();
   if (_now >= _nextTime) {;
     _curPos++;
     
@@ -45,6 +45,7 @@ void Song::manualBegin (Sound* sound) {
 void Song::begin (Sound::channelid_t chs, Sound::pin_t pin) {
   _Sound = (Sound*) malloc (sizeof(Sound));
   _Sound -> begin (chs, pin);
+  setTickType (TICK_FULL);
 }
 
 void Song::end (void) {
@@ -52,11 +53,28 @@ void Song::end (void) {
   free (_Sound);
 }
 
-void Song::playSong (const song_t* song) {
+void Song::playSong (const Song::song_t* song) {
   curSong = song;
 }
 
-void Song::tick (void) {
-  this -> songTick ();
-  _Sound -> soundTick ();
+void __attribute__((always_inline)) Song::tick (void) {
+  songTick ();
+  (_Sound ->* _tickType) ();
+}
+
+void Song::setTickType (char tickType) {
+  switch (tickType) {
+    case TICK_NORMAL:
+      _tickType = &_Sound -> tick;
+      break;
+    case TICK_FULL:
+      _tickType = &_Sound -> fullTick;
+      break;
+    case TICK_NORMALEQ:
+      _tickType = &_Sound -> tickEQ;
+      break;
+    case TICK_FULLEQ:
+      _tickType = &_Sound -> fullTickEQ;
+      break;
+  }
 }

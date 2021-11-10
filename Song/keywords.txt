@@ -11,8 +11,10 @@ stToFreq	KEYWORD2
 stToInterval	KEYWORD2
 tick	KEYWORD2
 tickType	KEYWORD2
+restart	KEYWORD2
 
 curSong	KEYWORD2
+isEnded	KEYWORD2
 
 
 Song	KEYWORD1

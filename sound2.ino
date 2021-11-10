@@ -18,7 +18,8 @@ const Song::song_t playMe[] = {
   { 2, 0 },
   { 1, 0 },
   { 0, 0 },
-  { SONG_LOOP, 0 }
+  { SONG_WAIT, 1000 },
+  { SONG_END, 0 }
 };
 
 void setup() {
@@ -29,11 +30,23 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  song.restart ();
   song.setTickType (TICK_NORMAL);
-  for (uint16_t i = 1; i; i++)
-    song.tick();
+  while (!song.isEnded)
+    song.tick ();
+  
+  song.restart ();
   song.setTickType (TICK_FULL);
-  for (uint16_t i = 1; i; i++)
-    song.tick();
-    
+  while (!song.isEnded)
+    song.tick ();
+  
+  song.restart ();
+  song.setTickType (TICK_NORMALEQ);
+  while (!song.isEnded)
+    song.tick ();
+  
+  song.restart ();
+  song.setTickType (TICK_FULLEQ);
+  while (!song.isEnded)
+    song.tick ();
 }

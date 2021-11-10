@@ -33,6 +33,7 @@ class Song {
     } song_t;
 
     const song_t* curSong;
+    bool isEnded = false;
     
     void begin (Sound::channelid_t chs, Sound::pin_t pin);
     void manualBegin (Sound* sound);
@@ -47,7 +48,6 @@ class Song {
     time_t _now, _nextTime;
     unsigned char _curPos = -1;
     unsigned int _curDelay = 0;
-    bool _ended = false;
     Sound* _Sound;
     void (Sound::*_tickType) (void); //dont really understand this but /shrug
 

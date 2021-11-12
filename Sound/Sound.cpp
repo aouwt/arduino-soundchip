@@ -13,7 +13,7 @@ void Sound::begin (Sound::channelid_t chs, Sound::pin_t outputPin) {
 
 void Sound::init (Sound::channelid_t chs) {
   numOfChs = chs;
-  ch = (Sound::channel_t*) malloc (sizeof(Sound::channel_t) * chs);
+  ch = new Sound::channel_t[chs];
 }
 
 void Sound::setPin (Sound::pin_t outputPin) {

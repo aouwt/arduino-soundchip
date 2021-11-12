@@ -50,7 +50,7 @@ void Song::begin (Sound::channelid_t chs, Sound::pin_t pin) {
 
 void Song::end (void) {
   _Sound -> end ();
-  free (_Sound);
+  delete _Sound;
 }
 
 void Song::playSong (const Song::song_t* song) {

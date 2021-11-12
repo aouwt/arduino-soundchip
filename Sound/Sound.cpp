@@ -21,7 +21,7 @@ void Sound::setPin (Sound::pin_t outputPin) {
 }
 
 void Sound::end (void) {
-  free (ch);
+  delete [] ch;
 }
 
 void __attribute__((always_inline)) Sound::setFreq (Sound::channelid_t channel, Sound::freq_t freq) {

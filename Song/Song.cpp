@@ -43,7 +43,7 @@ void Song::manualBegin (Sound* sound) {
 }
 
 void Song::begin (Sound::channelid_t chs, Sound::pin_t pin) {
-  _Sound = (Sound*) malloc (sizeof(Sound));
+  _Sound = new Sound;
   _Sound -> begin (chs, pin);
   setTickType (TICK_FULL);
 }
@@ -65,7 +65,7 @@ void Song::restart (void) {
 
 void __attribute__((always_inline)) Song::tick (void) {
   songTick ();
-  (_Sound ->* _tickType) ();
+  (_Sound ->* _tickType) (); //function pointers are fun
 }
 
 void Song::setTickType (char tickType) {

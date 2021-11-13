@@ -1,52 +1,73 @@
-#include <Song.h>
+#pragma GCC optimize ("Ofast")
+#include <Sound.h>
 
-Song song;
+Sound sound;
 
-#define N(note) stToInterval(note)
-const Song::song_t playMe[] = {
-  { SONG_SETDELAY, 500 },
-  { 0, N(49) },
-  { 1, N(53) },
-  { 2, N(56) },
-  { 3, N(61) },
-  { 4, N(65) },
-  { 5, N(68) },
-  { SONG_WAIT, 1000 },
-  { 5, 0 },
-  { 4, 0 },
-  { 3, 0 },
-  { 2, 0 },
-  { 1, 0 },
-  { 0, 0 },
-  { SONG_WAIT, 1000 },
-  { SONG_END, 0 }
-};
+#define getnote(note) (powf(2, ((float)(note)-49.0)/12.0) * 220.0)
 
-void setup() {
+void setup (void) {
   // put your setup code here, to run once:
-  song.begin (6, 13);
-  song.playSong (playMe);
+  sound.begin (8, LED_BUILTIN);
+  Serial.begin (9600);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  song.restart ();
-  song.setTickType (TICK_NORMAL);
-  while (!song.isEnded)
-    song.tick ();
+
+void loop (void) {
+  sound.tick_Normal ();
+  if (Serial.available () >= 3) MIDIRead ();
+}
+
+void MIDIRead (void) {
+  uint8_t cmd = Serial.read ();
+  if ((cmd & 0b10000000) == 0) return;
+  uint8_t note = Serial.read ();
+  uint8_t vel = Serial.read ();
   
-  song.restart ();
-  song.setTickType (TICK_FULL);
-  while (!song.isEnded)
-    song.tick ();
+  switch (cmd & 0xF0) {
+    
+    case 0x80:; // note off
+      note_off (note);
+      break;
+      
+    case 0x90:; // note on
+      if (vel == 0) note_off (note);
+      else note_on (note);
+      break;
+      
+    case 0xC0:; //control
+      switch (note) {
+        case 121:
+        case 123:
+          sound.clearChs();
+          break;
+      }
+      break;
+  }
+}
+
+void note_on (uint8_t note) {
+  Sound::fint_t iv = freqToInterval (getnote(note));
   
-  song.restart ();
-  song.setTickType (TICK_NORMALEQ);
-  while (!song.isEnded)
-    song.tick ();
-  
-  song.restart ();
-  song.setTickType (TICK_FULLEQ);
-  while (!song.isEnded)
-    song.tick ();
+  for (Sound::channelid_t i = 0; i != sound.numOfChs; i++) {
+    
+    if (sound.ch[i].interval == 0) {
+      sound.ch[i].interval = iv;
+      return;
+    }
+    
+  }
+  sound.ch[0].interval = iv;
+}
+
+void note_off (uint8_t note) {
+  Sound::fint_t iv = freqToInterval (getnote(note));
+
+  for (Sound::channelid_t i = 0; i != sound.numOfChs; i++) {
+    
+    if (sound.ch[i].interval == iv) {
+      sound.ch[i].interval = 0;
+      return;
+    }
+    
+  }
 }

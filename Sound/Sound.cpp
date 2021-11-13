@@ -2,10 +2,14 @@
 
 void Sound::begin (Sound::channelid_t chs, Sound::pin_t outputPin) {
   pinMode (outputPin, OUTPUT);
+  setTickType (TickType::Full);
   init (chs);
   setPin (outputPin);
-  
-  for (channelid_t i = 0; i != chs; i++) {
+  clearChs ();
+}
+
+void Sound::clearChs (void) {
+  for (channelid_t i = 0; i != numOfChs; i++) {
     ch[i].cycle = false; ch[i].next = 0; ch[i].interval = 0;
   }
   _curCh = 0; _now = 0;
@@ -13,7 +17,7 @@ void Sound::begin (Sound::channelid_t chs, Sound::pin_t outputPin) {
 
 void Sound::init (Sound::channelid_t chs) {
   numOfChs = chs;
-  ch = new Sound::channel_t[chs];
+  ch = (Sound::channel_t*) malloc (sizeof(Sound::channel_t) * chs);
 }
 
 void Sound::setPin (Sound::pin_t outputPin) {
@@ -21,14 +25,35 @@ void Sound::setPin (Sound::pin_t outputPin) {
 }
 
 void Sound::end (void) {
-  delete [] ch;
+  free (ch);
 }
 
-void __attribute__((always_inline)) Sound::setFreq (Sound::channelid_t channel, Sound::freq_t freq) {
+void /*__attribute__((always_inline))*/ Sound::setFreq (Sound::channelid_t channel, Sound::freq_t freq) {
   ch[channel].interval = freqToInterval (freq);
 }
 
+void Sound::setTickType (TickType type) {
+  switch (type) {
+    case TickType::Normal:
+      _tickType = &Sound::tick_Normal;
+      break;
+    case TickType::Full:
+      _tickType = &Sound::tick_Full;
+      break;
+    case TickType::NormalEQ:
+      _tickType = &Sound::tick_NormalEQ;
+      break;
+    case TickType::FullEQ:
+      _tickType = &Sound::tick_FullEQ;
+      break;
+  }
+}
+
 void Sound::tick (void) {
+  (this ->* _tickType) ();
+}
+
+void Sound::tick_Normal (void) {
   channelid_t i = numOfChs;
   next:
   if (++_curCh == numOfChs) {
@@ -46,7 +71,7 @@ void Sound::tick (void) {
     if (i--) goto next;
 }
 
-void Sound::fullTick (void) {
+void Sound::tick_Full (void) {
   _now = micros ();
   for (_curCh = 0; _curCh != numOfChs; _curCh++) {
     if (ch[_curCh].interval) {
@@ -62,7 +87,7 @@ void Sound::fullTick (void) {
   digitalWrite (pin, LOW);
 }
 
-void Sound::tickEQ (void) {
+void Sound::tick_NormalEQ (void) {
   if (++_curCh == numOfChs) {
     _curCh = 0; _now = micros ();
   }
@@ -77,7 +102,7 @@ void Sound::tickEQ (void) {
   } else digitalWrite (pin, LOW);
 }
 
-void Sound::fullTickEQ (void) {
+void Sound::tick_FullEQ (void) {
   _now = micros ();
   for (_curCh = 0; _curCh != numOfChs; _curCh++) {
     if (ch[_curCh].interval) {
